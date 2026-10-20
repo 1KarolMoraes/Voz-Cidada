@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "859717353479",
+    "project_id": "voz-cidada-777d9",
+    "storage_bucket": "voz-cidada-777d9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859717353479:android:4e9126a7e665f64a672aa2",
+        "android_client_info": {
+          "package_name": "com.example.voz_cidada"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQhqewa6x3bMMeD8TGqzshw-KNv1VGVyY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
