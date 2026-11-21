@@ -17,10 +17,12 @@
             android:layout_width="150dp"
             android:layout_height="100dp"
             android:layout_marginTop="32dp"
+            android:src="@drawable/voz_cidada_logo"
+            android:scaleType="fitCenter"
+            android:contentDescription="Logo Voz Cidadã"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:background="#E0E0E0" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Card Branco com os elementos de login -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,8 +51,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Entrar"
                     android:backgroundTint="#FFFFFF"
+                    android:text="Entrar"
                     android:textColor="#000000" />
 
                 <Button
@@ -58,8 +60,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Criar conta"
                     android:backgroundTint="#00000000"
+                    android:text="Criar conta"
                     android:textColor="#888888"
                     app:elevation="0dp" />
             </LinearLayout>
