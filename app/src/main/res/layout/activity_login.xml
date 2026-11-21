@@ -45,7 +45,7 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <Button
-                    android:id="@+id/btnAbaLogin"
+                    android:id="@+id/btnAbaEntrar"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -54,7 +54,7 @@
                     android:textColor="#000000" />
 
                 <Button
-                    android:id="@+id/btnAbaCriar"
+                    android:id="@+id/btnAbaCadastro"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -150,7 +150,7 @@
 
             <!-- Botão Entrar no Voz Cidadã -->
             <Button
-                android:id="@+id/btnAbaEntrar"
+                android:id="@+id/btnLogin"
                 android:layout_width="0dp"
                 android:layout_height="55dp"
                 android:text="Entrar no Voz Cidadã"
@@ -171,7 +171,7 @@
                 android:textAlignment="center"
                 android:textColor="#888888"
                 android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@id/btnAbaEntrar"
+                app:layout_constraintTop_toBottomOf="@id/btnLogin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
