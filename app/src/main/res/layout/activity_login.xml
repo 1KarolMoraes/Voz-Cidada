@@ -45,6 +45,7 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <Button
+                    android:id="@+id/btnAbaEntrar"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -53,6 +54,7 @@
                     android:textColor="#000000" />
 
                 <Button
+                    android:id="@+id/btnAbaCadastro"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -126,7 +128,7 @@
                 android:id="@+id/inputSenha"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:hint="Mínimo de 4 caracteres"
+                android:hint="Mínimo de 6 caracteres"
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:layout_marginTop="8dp"
