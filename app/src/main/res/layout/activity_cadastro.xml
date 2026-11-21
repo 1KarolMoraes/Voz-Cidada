@@ -46,7 +46,7 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <Button
-                    android:id="@+id/btnTabEntrar"
+                    android:id="@+id/btnAbaLogin"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -56,7 +56,7 @@
                     app:elevation="0dp" />
 
                 <Button
-                    android:id="@+id/btnTabCriar"
+                    android:id="@+id/btnAbaCriar"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
