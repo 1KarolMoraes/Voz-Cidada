@@ -35,7 +35,7 @@ public class FotoGradeAdapter extends RecyclerView.Adapter<FotoGradeAdapter.Foto
 
     @Override
     public void onBindViewHolder(@NonNull FotoViewHolder holder, int position) {
-        // Uri.EMPTY = tile cinza de placeholder. Para URLs do Firebase Storage,
+        // setImageURI só carrega Uris locais. Para URLs do Firebase Storage,
         // trocar por uma biblioteca de imagens (ex.: Glide).
         holder.imagem.setImageURI(fotos.get(position));
         holder.imagem.setOnLongClickListener(v -> {

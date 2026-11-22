@@ -96,8 +96,10 @@ public class DenunciaActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.denuncia_nenhuma_imagem, Toast.LENGTH_SHORT).show();
             return;
         }
-        // TODO (feature/publicacoes): abrir a próxima etapa (descrição, categoria e
-        // localização) passando imagemSelecionada e depois enviar ao Firebase.
+        // TODO (etapa de publicações): abrir a próxima tela (descrição, categoria e
+        // localização) passando imagemSelecionada e então gravar no Firebase.
+        // Enquanto isso, avisa que a etapa ainda não existe.
+        Toast.makeText(this, R.string.denuncia_proxima_etapa_dev, Toast.LENGTH_LONG).show();
     }
 
     private void confirmarDescarte() {

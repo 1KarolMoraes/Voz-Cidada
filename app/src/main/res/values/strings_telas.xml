@@ -39,9 +39,15 @@
     <string name="perfil_sair_confirmar">Sair</string>
     <string name="perfil_foto_trocar">Trocar foto</string>
     <string name="perfil_foto_remover">Remover foto</string>
-    <string name="perfil_excluir_titulo">Excluir denúncia?</string>
-    <string name="perfil_excluir_mensagem">Esta ação não pode ser desfeita.</string>
-    <string name="perfil_excluir">Excluir</string>
-    <string name="perfil_excluida">Denúncia excluída</string>
     <string name="cancelar">Cancelar</string>
+
+    <!-- Perfil: carregamento e avisos -->
+    <string name="perfil_carregando">Carregando…</string>
+    <string name="perfil_sem_documento">Não encontramos seus dados de perfil. Exibindo o nome da conta.</string>
+    <string name="perfil_sem_nome">Seu perfil não tem um nome cadastrado. Exibindo o nome da conta.</string>
+    <string name="perfil_erro_carregar">Não foi possível carregar seus dados. Toque para tentar novamente.</string>
+    <string name="recurso_em_desenvolvimento">Este recurso ainda está em desenvolvimento.</string>
+
+    <!-- Denúncia -->
+    <string name="denuncia_proxima_etapa_dev">A próxima etapa (descrição, categoria e localização) ainda está em desenvolvimento.</string>
 </resources>
