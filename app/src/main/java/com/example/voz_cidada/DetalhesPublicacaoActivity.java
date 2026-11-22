@@ -1,29 +1,25 @@
-
 package com.example.voz_cidada;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FieldValue;
-
 import java.util.HashMap;
 import java.util.Map;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.WriteBatch;
 
 public class DetalhesPublicacaoActivity extends AppCompatActivity {
 
@@ -151,6 +147,7 @@ public class DetalhesPublicacaoActivity extends AppCompatActivity {
 
     }
 
+
     private void salvarPublicacao(
             String categoria,
             String localizacao,
@@ -159,7 +156,6 @@ public class DetalhesPublicacaoActivity extends AppCompatActivity {
     ) {
         FirebaseUser usuario = autenticacao.getCurrentUser();
 
-        // Verifica se existe um usuário autenticado
         if (usuario == null) {
             Toast.makeText(
                     this,
@@ -169,24 +165,35 @@ public class DetalhesPublicacaoActivity extends AppCompatActivity {
             return;
         }
 
-        // Organiza os dados da publicação
-        Map<String, Object> publicacao = new HashMap<>();
+        // Cria as referências com o mesmo ID de publicação
+        DocumentReference referenciaPublicacao =
+                bancoDados.collection("publicacoes").document();
 
-        publicacao.put("autorId", usuario.getUid());
+        DocumentReference referenciaAutoria =
+                bancoDados.collection("autoriasPublicacoes")
+                        .document(referenciaPublicacao.getId());
+
+        // Dados que serão exibidos no Feed
+        Map<String, Object> publicacao = new HashMap<>();
         publicacao.put("categoria", categoria);
         publicacao.put("localizacao", localizacao);
         publicacao.put("descricao", descricao);
         publicacao.put("anonimo", anonimo);
         publicacao.put("criadoEm", FieldValue.serverTimestamp());
 
-        // Evita vários cliques enquanto salva
+        // Dados privados de autoria
+        Map<String, Object> autoria = new HashMap<>();
+        autoria.put("autorId", usuario.getUid());
+
+        // Prepara a gravação conjunta
+        WriteBatch lote = bancoDados.batch();
+        lote.set(referenciaPublicacao, publicacao);
+        lote.set(referenciaAutoria, autoria);
+
         btnPublicar.setEnabled(false);
 
-        // Salva a denúncia no Firestore
-        bancoDados.collection("publicacoes")
-                .add(publicacao)
-                .addOnSuccessListener(documentReference -> {
-
+        lote.commit()
+                .addOnSuccessListener(resultado -> {
                     Toast.makeText(
                             this,
                             "Denúncia publicada com sucesso!",
@@ -196,7 +203,6 @@ public class DetalhesPublicacaoActivity extends AppCompatActivity {
                     finish();
                 })
                 .addOnFailureListener(e -> {
-
                     btnPublicar.setEnabled(true);
 
                     Toast.makeText(
@@ -206,5 +212,6 @@ public class DetalhesPublicacaoActivity extends AppCompatActivity {
                     ).show();
                 });
     }
+
 
 }
