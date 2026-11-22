@@ -43,5 +43,13 @@ public class EmAltaActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+        findViewById(R.id.btnPerfil).setOnClickListener(v -> {
+            Intent intent = new Intent(EmAltaActivity.this, PerfilActivity.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.btnDenunciar).setOnClickListener(v -> {
+            Intent intent = new Intent(EmAltaActivity.this, DenunciaActivity.class);
+            startActivity(intent);
+        });
     }
 }

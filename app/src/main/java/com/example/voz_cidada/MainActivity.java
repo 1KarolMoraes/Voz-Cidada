@@ -47,6 +47,16 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        findViewById(R.id.btnPerfil).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, PerfilActivity.class);
+            startActivity(intent);
+        });
+
+        findViewById(R.id.btnDenunciar).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, DenunciaActivity.class);
+            startActivity(intent);
+        });
+
         // Ajusta o conteúdo para não ficar atrás das barras do celular
         ViewCompat.setOnApplyWindowInsetsListener(
                 findViewById(R.id.feedRoot), (v, insets) -> {
