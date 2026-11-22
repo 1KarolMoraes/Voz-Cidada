@@ -8,6 +8,7 @@ import org.junit.Test;
 
 public class CriterioEmAltaTest {
 
+    private static final long MINUTO = 60000L;
     private static final long HORA = 3600000L;
     private static final long AGORA = 1_000_000_000_000L;
 
@@ -41,8 +42,23 @@ public class CriterioEmAltaTest {
     }
 
     @Test
-    public void relogioAdiantadoNaoGeraScoreNegativo() {
-        double score = CriterioEmAlta.calcularScore(3, 1, AGORA + HORA, AGORA);
-        assertTrue(score >= 0);
+    public void postForaDaJanelaTemScoreZero() {
+        assertEquals(0.0, CriterioEmAlta.calcularScore(100, 100, AGORA - 200 * HORA, AGORA), 0.0001);
+    }
+
+    @Test
+    public void diferencaPequenaDeRelogioAindaPontua() {
+        double score = CriterioEmAlta.calcularScore(3, 1, AGORA + MINUTO, AGORA);
+        assertTrue(score > 0);
+    }
+
+    @Test
+    public void dataFuturaAlemDaToleranciaFicaForaDaJanela() {
+        assertFalse(CriterioEmAlta.estaNaJanela(AGORA + HORA, AGORA));
+    }
+
+    @Test
+    public void dataFuturaAlemDaToleranciaTemScoreZero() {
+        assertEquals(0.0, CriterioEmAlta.calcularScore(100, 100, AGORA + HORA, AGORA), 0.0001);
     }
 }
