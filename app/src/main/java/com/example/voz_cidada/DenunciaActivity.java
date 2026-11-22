@@ -19,6 +19,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 
+import android.content.Intent;
+
 /**
  * Tela "Nova Denúncia": o usuário escolhe uma imagem da galeria (sem precisar de permissão).
  */
@@ -91,15 +93,28 @@ public class DenunciaActivity extends AppCompatActivity {
         btnContinuar.setVisibility(View.VISIBLE);
     }
 
+
     private void continuar() {
         if (imagemSelecionada == null) {
-            Toast.makeText(this, R.string.denuncia_nenhuma_imagem, Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    this,
+                    R.string.denuncia_nenhuma_imagem,
+                    Toast.LENGTH_SHORT
+            ).show();
             return;
         }
-        // TODO (etapa de publicações): abrir a próxima tela (descrição, categoria e
-        // localização) passando imagemSelecionada e então gravar no Firebase.
-        // Enquanto isso, avisa que a etapa ainda não existe.
-        Toast.makeText(this, R.string.denuncia_proxima_etapa_dev, Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(
+                DenunciaActivity.this,
+                DetalhesPublicacaoActivity.class
+        );
+
+        intent.putExtra(
+                "imagemUri",
+                imagemSelecionada.toString()
+        );
+
+        startActivity(intent);
     }
 
     private void confirmarDescarte() {

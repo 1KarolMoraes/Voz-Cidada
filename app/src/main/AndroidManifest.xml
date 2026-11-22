@@ -36,6 +36,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".DetalhesPublicacaoActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".DenunciaActivity"
             android:exported="false" />
 
