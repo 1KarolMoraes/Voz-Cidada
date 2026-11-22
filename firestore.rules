@@ -1,0 +1,67 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /usuarios/{userId} {
+      allow create: if request.auth != null
+        && request.auth.uid == userId;
+
+      allow read, update, delete: if request.auth != null
+        && request.auth.uid == userId;
+    }
+
+    match /publicacoes/{publicacaoId} {
+
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly([
+          'categoria',
+          'localizacao',
+          'descricao',
+          'anonimo',
+          'criadoEm'
+        ])
+        && request.resource.data.keys().hasAll([
+          'categoria',
+          'localizacao',
+          'descricao',
+          'anonimo',
+          'criadoEm'
+        ])
+        && request.resource.data.categoria is string
+        && request.resource.data.categoria.size() > 0
+        && request.resource.data.localizacao is string
+        && request.resource.data.localizacao.size() > 0
+        && request.resource.data.descricao is string
+        && request.resource.data.descricao.size() > 0
+        && request.resource.data.anonimo is bool
+        && request.resource.data.criadoEm == request.time
+        && getAfter(
+          /databases/$(database)/documents/autoriasPublicacoes/$(publicacaoId)
+        ).data.autorId == request.auth.uid;
+
+      allow update, delete: if false;
+    }
+
+    match /autoriasPublicacoes/{publicacaoId} {
+
+      // Nenhum cliente pode consultar os registros privados
+      allow read: if false;
+
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['autorId'])
+        && request.resource.data.keys().hasAll(['autorId'])
+        && request.resource.data.autorId == request.auth.uid
+        && getAfter(
+          /databases/$(database)/documents/publicacoes/$(publicacaoId)
+        ).data.anonimo is bool
+        && !exists(
+          /databases/$(database)/documents/publicacoes/$(publicacaoId)
+        );
+
+      allow update, delete: if false;
+    }
+  }
+}
