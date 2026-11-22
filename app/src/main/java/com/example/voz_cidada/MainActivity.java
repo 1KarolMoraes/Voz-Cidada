@@ -1,3 +1,4 @@
+
 package com.example.voz_cidada;
 
 import android.content.Intent;
@@ -36,12 +37,19 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        // Habilita o ajuste de tela às barras do sistema
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        findViewById(R.id.btnSair).setOnClickListener(v -> realizarLogout());
 
+        setContentView(R.layout.activity_feed);
+
+        findViewById(R.id.btnEmAlta).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, EmAltaActivity.class);
+            startActivity(intent);
+        });
+
+        // Ajusta o conteúdo para não ficar atrás das barras do celular
         ViewCompat.setOnApplyWindowInsetsListener(
-                findViewById(R.id.main), (v, insets) -> {
+                findViewById(R.id.feedRoot), (v, insets) -> {
 
                     Insets systemBars = insets.getInsets(
                             WindowInsetsCompat.Type.systemBars()
@@ -57,17 +65,5 @@ public class MainActivity extends AppCompatActivity {
                     return insets;
                 }
         );
-    }
-    private void realizarLogout() {
-
-        autenticacao.signOut();
-
-        Intent intent = new Intent(
-                MainActivity.this,
-                LoginActivity.class
-        );
-
-        startActivity(intent);
-        finish();
     }
 }
