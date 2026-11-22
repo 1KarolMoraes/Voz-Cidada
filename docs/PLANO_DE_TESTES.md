@@ -57,7 +57,7 @@ Legenda de status: [ ] pendente | [x] passou | [!] falhou
 
 ## Testes unitários
 
-- CriterioEmAltaTest: 6 testes sobre a pontuação e a janela de 7 dias.
+- CriterioEmAltaTest: 9 testes sobre a pontuação e a janela de 7 dias.
 
 ## Bugs encontrados
 
