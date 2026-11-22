@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="vc_azul">#0B4A8B</color>
+    <color name="vc_azul_claro">#E8F0FA</color>
+    <color name="vc_verde">#0E7C45</color>
+    <color name="vc_fundo">#FAF9F7</color>
+    <color name="vc_texto">#1A1A1A</color>
+    <color name="vc_texto_suave">#8A857E</color>
+    <color name="vc_borda">#E6E2DC</color>
+    <color name="vc_placeholder">#D9D5CE</color>
+</resources>
