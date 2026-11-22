@@ -1,0 +1,25 @@
+name: Testes
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Permissão do Gradle
+        run: chmod +x gradlew
+
+      - name: Testes unitários
+        run: ./gradlew testDebugUnitTest
+
+      - name: Compilar
+        run: ./gradlew assembleDebug
