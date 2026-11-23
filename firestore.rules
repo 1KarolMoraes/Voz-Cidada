@@ -101,8 +101,9 @@ service cloud.firestore {
 
     match /autoriasPublicacoes/{publicacaoId} {
 
-      // Nenhum cliente pode consultar os registros privados
-      allow read: if false;
+    // Cada usuário pode consultar somente seus próprios registros
+    allow get, list: if request.auth != null
+    && resource.data.autorId == request.auth.uid;
 
       allow create: if request.auth != null
         && request.resource.data.keys().hasOnly(['autorId'])

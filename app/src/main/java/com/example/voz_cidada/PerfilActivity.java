@@ -1,13 +1,12 @@
 package com.example.voz_cidada;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.firebase.firestore.DocumentSnapshot;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,11 +16,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +40,8 @@ public class PerfilActivity extends AppCompatActivity {
     private FirebaseFirestore bancoDados;
     private FirebaseUser usuario;
 
-    /** Publicações do usuário. Fica vazia até a integração com as publicações. */
-    private final List<Uri> fotos = new ArrayList<>();
+    /** Publicações pertencentes ao usuário autenticado. */
+    private final List<DocumentSnapshot> publicacoes = new ArrayList<>();
     private FotoGradeAdapter adapter;
     private GridLayoutManager layoutManager;
 
@@ -83,14 +82,84 @@ public class PerfilActivity extends AppCompatActivity {
         txtVazio = findViewById(R.id.txtVazio);
         recyclerFotos = findViewById(R.id.recyclerFotos);
 
+
         BarraNavegacao.configurar(this, BarraNavegacao.PERFIL);
         configurarGrade();
-        configurarAbas();
 
         findViewById(R.id.avatarContainer).setOnClickListener(this::mostrarMenuFoto);
         findViewById(R.id.btnSair).setOnClickListener(v -> confirmarSaida());
 
         carregarPerfil();
+        carregarPublicacoes();
+    }
+
+    private void carregarPublicacoes() {
+        bancoDados.collection("autoriasPublicacoes")
+                .whereEqualTo("autorId", usuario.getUid())
+                .get()
+                .addOnSuccessListener(this, autorias -> {
+
+                    publicacoes.clear();
+                    adapter.notifyDataSetChanged();
+                    atualizarEstado();
+
+                    if (autorias.isEmpty()) {
+                        return;
+                    }
+
+                    List<com.google.android.gms.tasks.Task<DocumentSnapshot>> consultas =
+                            new ArrayList<>();
+
+                    for (DocumentSnapshot autoria : autorias.getDocuments()) {
+                        consultas.add(
+                                bancoDados.collection("publicacoes")
+                                        .document(autoria.getId())
+                                        .get()
+                        );
+                    }
+
+                    Tasks.whenAllSuccess(consultas)
+                            .addOnSuccessListener(this, resultados -> {
+                                publicacoes.clear();
+
+                                for (Object resultado : resultados) {
+                                    DocumentSnapshot documento =
+                                            (DocumentSnapshot) resultado;
+
+                                    if (documento.exists()) {
+                                        publicacoes.add(documento);
+                                    }
+                                }
+
+                                publicacoes.sort((a, b) -> {
+                                    com.google.firebase.Timestamp dataA =
+                                            a.getTimestamp("criadoEm");
+                                    com.google.firebase.Timestamp dataB =
+                                            b.getTimestamp("criadoEm");
+
+                                    if (dataA == null && dataB == null) return 0;
+                                    if (dataA == null) return 1;
+                                    if (dataB == null) return -1;
+
+                                    return dataB.compareTo(dataA);
+                                });
+
+                                adapter.notifyDataSetChanged();
+                                atualizarEstado();
+                            })
+                            .addOnFailureListener(this, erro -> {
+                                Log.e(TAG, "Erro ao buscar denúncias", erro);
+                                Toast.makeText(this,
+                                        "Não foi possível carregar suas denúncias.",
+                                        Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(this, erro -> {
+                    Log.e(TAG, "Erro ao consultar autorias", erro);
+                    Toast.makeText(this,
+                            "Não foi possível carregar suas publicações.",
+                            Toast.LENGTH_SHORT).show();
+                });
     }
 
     // ---------- Dados do usuário (Firestore) ----------
@@ -154,39 +223,31 @@ public class PerfilActivity extends AppCompatActivity {
 
     // ---------- Grade / Lista ----------
 
+
+    // ---------- Grade de publicações ----------
+
     private void configurarGrade() {
         layoutManager = new GridLayoutManager(this, 3);
-        adapter = new FotoGradeAdapter(fotos, posicao -> emDesenvolvimento());
+
+        adapter = new FotoGradeAdapter(publicacoes, posicao -> {
+            // A abertura dos detalhes será implementada depois.
+            emDesenvolvimento();
+        });
+
         recyclerFotos.setLayoutManager(layoutManager);
         recyclerFotos.setAdapter(adapter);
+
         atualizarEstado();
     }
 
-    private void configurarAbas() {
-        TabLayout abas = findViewById(R.id.tabs);
-        abas.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                // Grade = 3 colunas, Lista = 1 coluna
-                layoutManager.setSpanCount(tab.getPosition() == 0 ? 3 : 1);
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
-    }
-
     private void atualizarEstado() {
-        txtQtdDenuncias.setText(String.valueOf(fotos.size()));
-        // TODO (publicações): somar os impulsos das publicações do usuário
+        txtQtdDenuncias.setText(String.valueOf(publicacoes.size()));
+
+        // Contagem de impulsos ainda não implementada no perfil.
         txtQtdImpulsionadas.setText("0");
 
-        boolean vazio = fotos.isEmpty();
+        boolean vazio = publicacoes.isEmpty();
+
         txtVazio.setVisibility(vazio ? View.VISIBLE : View.GONE);
         recyclerFotos.setVisibility(vazio ? View.GONE : View.VISIBLE);
     }

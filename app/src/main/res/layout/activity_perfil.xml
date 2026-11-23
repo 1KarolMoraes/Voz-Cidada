@@ -159,29 +159,6 @@
 
             <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/vc_borda" />
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                app:tabGravity="start"
-                app:tabIconTint="@color/vc_texto_suave"
-                app:tabIndicatorColor="@color/vc_azul"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/vc_azul"
-                app:tabTextColor="@color/vc_texto_suave">
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_grid"
-                    android:text="@string/perfil_grade" />
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_fire"
-                    android:text="@string/perfil_lista" />
-            </com.google.android.material.tabs.TabLayout>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerFotos"
                 android:layout_width="match_parent"
