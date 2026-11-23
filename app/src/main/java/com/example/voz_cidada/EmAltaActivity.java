@@ -65,16 +65,16 @@ public class EmAltaActivity extends AppCompatActivity {
                 }
 
         );
-        findViewById(R.id.btnFeed).setOnClickListener(v -> {
+        findViewById(R.id.navFeed).setOnClickListener(v -> {
             Intent intent = new Intent(EmAltaActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         });
-        findViewById(R.id.btnPerfil).setOnClickListener(v -> {
+        findViewById(R.id.navPerfil).setOnClickListener(v -> {
             Intent intent = new Intent(EmAltaActivity.this, PerfilActivity.class);
             startActivity(intent);
         });
-        findViewById(R.id.btnDenunciar).setOnClickListener(v -> {
+        findViewById(R.id.navDenunciar).setOnClickListener(v -> {
             Intent intent = new Intent(EmAltaActivity.this, DenunciaActivity.class);
             startActivity(intent);
         });

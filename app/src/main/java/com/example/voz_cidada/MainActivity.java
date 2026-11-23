@@ -71,17 +71,17 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerPublicacoes.setAdapter(publicacaoAdapter);
 
-        findViewById(R.id.btnEmAlta).setOnClickListener(v -> {
+        findViewById(R.id.navEmAlta).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, EmAltaActivity.class);
             startActivity(intent);
         });
 
-        findViewById(R.id.btnPerfil).setOnClickListener(v -> {
+        findViewById(R.id.navPerfil).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, PerfilActivity.class);
             startActivity(intent);
         });
 
-        findViewById(R.id.btnDenunciar).setOnClickListener(v -> {
+        findViewById(R.id.navDenunciar).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, DenunciaActivity.class);
             startActivity(intent);
         });

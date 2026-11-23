@@ -78,6 +78,46 @@ public class PublicacaoAdapter
 
         String categoria = publicacao.getString("categoria");
         String localizacao = publicacao.getString("localizacao");
+        // Seleciona a ilustração conforme a categoria da publicação
+        int iconeCategoria = R.drawable.ic_categoria_outro;
+
+        if (categoria != null) {
+            switch (categoria.trim().toLowerCase(java.util.Locale.ROOT)) {
+                case "infraestrutura":
+                    iconeCategoria = R.drawable.ic_categoria_infraestrutura;
+                    break;
+
+                case "meio ambiente":
+                    iconeCategoria = R.drawable.ic_categoria_meio_ambiente;
+                    break;
+
+                case "iluminação":
+                    iconeCategoria = R.drawable.ic_categoria_iluminacao;
+                    break;
+
+                case "saneamento":
+                    iconeCategoria = R.drawable.ic_categoria_saneamento;
+                    break;
+
+                case "trânsito":
+                    iconeCategoria = R.drawable.ic_categoria_transito;
+                    break;
+
+                case "saúde":
+                    iconeCategoria = R.drawable.ic_categoria_saude;
+                    break;
+
+                case "segurança":
+                    iconeCategoria = R.drawable.ic_categoria_seguranca;
+                    break;
+
+                default:
+                    iconeCategoria = R.drawable.ic_categoria_outro;
+                    break;
+            }
+        }
+
+        holder.imgPost.setImageResource(iconeCategoria);
         String descricao = publicacao.getString("descricao");
         Boolean anonimo = publicacao.getBoolean("anonimo");
 
@@ -392,8 +432,8 @@ public class PublicacaoAdapter
             holder.txtToggleComments.performClick();
         });
 
-        // Ainda não armazenamos fotografias
-        holder.imgPost.setVisibility(View.GONE);
+        // Exibe o espaço reservado à ilustração da categoria
+        holder.imgPost.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -412,7 +452,7 @@ public class PublicacaoAdapter
         ImageView iconImpulse;
         ImageView iconComment;
         TextView txtToggleComments;
-        View imgPost;
+        ImageView imgPost;
         TextView txtTime;
         String publicacaoIdAtual;
 
