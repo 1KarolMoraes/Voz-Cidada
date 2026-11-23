@@ -3,6 +3,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    function usuarioAutenticado() {
+        return request.auth != null;
+    }
+
     match /usuarios/{userId} {
       allow create: if request.auth != null
         && request.auth.uid == userId;
@@ -43,6 +47,56 @@ service cloud.firestore {
         ).data.autorId == request.auth.uid;
 
       allow update, delete: if false;
+      match /likes/{userId} {
+        allow read: if usuarioAutenticado();
+
+        allow create: if usuarioAutenticado()
+          && exists(
+            /databases/$(database)/documents/publicacoes/$(publicacaoId)
+          )
+          && request.auth.uid == userId
+
+          && request.resource.data.keys().hasOnly(['createdAt'])
+          && request.resource.data.keys().hasAll(['createdAt'])
+          && request.resource.data.createdAt == request.time;
+
+        allow delete: if usuarioAutenticado()
+          && request.auth.uid == userId;
+
+        allow update: if false;
+      }
+      match /comments/{comentarioId} {
+        allow read: if usuarioAutenticado();
+
+        allow create: if usuarioAutenticado()
+          && exists(
+            /databases/$(database)/documents/publicacoes/$(publicacaoId)
+          )
+          && request.resource.data.keys().hasOnly([
+            'postId',
+            'authorId',
+            'authorName',
+            'text',
+            'createdAt'
+          ])
+          && request.resource.data.keys().hasAll([
+            'postId',
+            'authorId',
+            'authorName',
+            'text',
+            'createdAt'
+          ])
+          && request.resource.data.postId == publicacaoId
+          && request.resource.data.authorId == request.auth.uid
+          && request.resource.data.authorName is string
+          && request.resource.data.authorName.size() > 0
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 1000
+          && request.resource.data.createdAt == request.time;
+
+        allow update, delete: if false;
+      }
     }
 
     match /autoriasPublicacoes/{publicacaoId} {
