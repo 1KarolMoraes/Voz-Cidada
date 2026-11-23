@@ -1,11 +1,15 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { test } = require("node:test");
-const { initializeTestEnvironment, assertFails } =
+const { initializeTestEnvironment, assertFails, assertSucceeds } =
     require("@firebase/rules-unit-testing");
 const {
     doc,
+    collection,
+    query,
+    where,
     getDoc,
+    getDocs,
     setDoc,
     deleteDoc,
     serverTimestamp
@@ -57,8 +61,7 @@ test("Usuário autenticado pode ler publicações", async () => {
     }
 });
 
-
-test("Usuário não pode consultar a autoria privada de uma publicação", async () => {
+test("Somente o autor pode consultar a autoria privada", async () => {
     const testEnv = await initializeTestEnvironment({
         projectId: "demo-voz-cidada",
         firestore: {
@@ -72,14 +75,40 @@ test("Usuário não pode consultar a autoria privada de uma publicação", async
     });
 
     try {
-        const db = testEnv.authenticatedContext("usuario-teste").firestore();
-        const autoria = doc(
-            db,
+        await testEnv.clearFirestore();
+
+        await testEnv.withSecurityRulesDisabled(async (context) => {
+            const dbAdmin = context.firestore();
+
+            await setDoc(
+                doc(dbAdmin, "autoriasPublicacoes", "publicacao-teste"),
+                { autorId: "usuario-teste" }
+            );
+        });
+
+        const dbAutor = testEnv
+            .authenticatedContext("usuario-teste")
+            .firestore();
+
+        const dbOutro = testEnv
+            .authenticatedContext("outro-usuario")
+            .firestore();
+
+        const autoriaAutor = doc(
+            dbAutor,
             "autoriasPublicacoes",
             "publicacao-teste"
         );
 
-        await assertFails(getDoc(autoria));
+        const autoriaOutro = doc(
+            dbOutro,
+            "autoriasPublicacoes",
+            "publicacao-teste"
+        );
+
+        await assertSucceeds(getDoc(autoriaAutor));
+        await assertFails(getDoc(autoriaOutro));
+
     } finally {
         await testEnv.cleanup();
     }
@@ -331,6 +360,78 @@ test("Usuário pode excluir a própria curtida", async () => {
         );
 
         await deleteDoc(minhaCurtida);
+    } finally {
+        await testEnv.cleanup();
+    }
+});
+
+test("Usuário pode listar somente suas próprias autorias", async () => {
+    const testEnv = await initializeTestEnvironment({
+        projectId: "demo-voz-cidada",
+        firestore: {
+            host: "127.0.0.1",
+            port: 8080,
+            rules: fs.readFileSync(
+                path.join(__dirname, "../../firestore.rules"),
+                "utf8"
+            )
+        }
+    });
+
+    try {
+        await testEnv.clearFirestore();
+
+        await testEnv.withSecurityRulesDisabled(async (context) => {
+            const dbAdmin = context.firestore();
+
+            await setDoc(
+                doc(dbAdmin, "autoriasPublicacoes", "publicacao-1"),
+                { autorId: "usuario-teste" }
+            );
+
+            await setDoc(
+                doc(dbAdmin, "autoriasPublicacoes", "publicacao-2"),
+                { autorId: "usuario-teste" }
+            );
+
+            await setDoc(
+                doc(dbAdmin, "autoriasPublicacoes", "publicacao-3"),
+                { autorId: "outro-usuario" }
+            );
+        });
+
+        const db = testEnv
+            .authenticatedContext("usuario-teste")
+            .firestore();
+
+        // Consulta somente as autorias do usuário autenticado
+        const minhasAutorias = query(
+            collection(db, "autoriasPublicacoes"),
+            where("autorId", "==", "usuario-teste")
+        );
+
+        const resultado = await assertSucceeds(getDocs(minhasAutorias));
+
+        // Deve encontrar exatamente duas publicações
+        if (resultado.size !== 2) {
+            throw new Error(
+                `Esperadas 2 publicações, encontradas ${resultado.size}`
+            );
+        }
+
+        // Consulta sem filtro não deve ser permitida
+        await assertFails(
+            getDocs(collection(db, "autoriasPublicacoes"))
+        );
+
+        // Não pode consultar as autorias de outro usuário
+        const autoriasDeOutro = query(
+            collection(db, "autoriasPublicacoes"),
+            where("autorId", "==", "outro-usuario")
+        );
+
+        await assertFails(getDocs(autoriasDeOutro));
+
     } finally {
         await testEnv.cleanup();
     }

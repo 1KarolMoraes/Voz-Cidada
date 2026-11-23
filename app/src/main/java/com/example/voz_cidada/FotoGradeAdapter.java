@@ -1,63 +1,89 @@
 package com.example.voz_cidada;
 
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+
 import java.util.List;
 
-/** Adapter da grade/lista de fotos das denúncias do perfil. */
-public class FotoGradeAdapter extends RecyclerView.Adapter<FotoGradeAdapter.FotoViewHolder> {
+public class FotoGradeAdapter
+        extends RecyclerView.Adapter<FotoGradeAdapter.PublicacaoViewHolder> {
 
-    public interface OnFotoLongClick {
-        void aoSegurar(int posicao);
+    public interface OnPublicacaoClick {
+        void aoClicar(int posicao);
     }
 
-    private final List<Uri> fotos;
-    private final OnFotoLongClick listener;
+    private final List<DocumentSnapshot> publicacoes;
+    private final OnPublicacaoClick listener;
 
-    public FotoGradeAdapter(List<Uri> fotos, OnFotoLongClick listener) {
-        this.fotos = fotos;
+    public FotoGradeAdapter(
+            List<DocumentSnapshot> publicacoes,
+            OnPublicacaoClick listener
+    ) {
+        this.publicacoes = publicacoes;
         this.listener = listener;
     }
 
     @NonNull
     @Override
-    public FotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PublicacaoViewHolder onCreateViewHolder(
+            @NonNull ViewGroup parent,
+            int viewType
+    ) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_foto_grade, parent, false);
-        return new FotoViewHolder(view);
+
+        return new PublicacaoViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FotoViewHolder holder, int position) {
-        // setImageURI só carrega Uris locais. Para URLs do Firebase Storage,
-        // trocar por uma biblioteca de imagens (ex.: Glide).
-        holder.imagem.setImageURI(fotos.get(position));
-        holder.imagem.setOnLongClickListener(v -> {
-            int pos = holder.getBindingAdapterPosition();
-            if (pos != RecyclerView.NO_POSITION) {
-                listener.aoSegurar(pos);
+    public void onBindViewHolder(
+            @NonNull PublicacaoViewHolder holder,
+            int position
+    ) {
+        DocumentSnapshot publicacao = publicacoes.get(position);
+
+        String categoria = publicacao.getString("categoria");
+        String descricao = publicacao.getString("descricao");
+
+        holder.txtCategoria.setText(
+                categoria != null ? categoria : "Outro"
+        );
+
+        holder.txtDescricao.setText(
+                descricao != null ? descricao : ""
+        );
+
+        holder.itemView.setOnClickListener(v -> {
+            int posicao = holder.getBindingAdapterPosition();
+
+            if (posicao != RecyclerView.NO_POSITION) {
+                listener.aoClicar(posicao);
             }
-            return true;
         });
     }
 
     @Override
     public int getItemCount() {
-        return fotos.size();
+        return publicacoes.size();
     }
 
-    static class FotoViewHolder extends RecyclerView.ViewHolder {
-        final SquareImageView imagem;
+    static class PublicacaoViewHolder extends RecyclerView.ViewHolder {
 
-        FotoViewHolder(@NonNull View itemView) {
+        final TextView txtCategoria;
+        final TextView txtDescricao;
+
+        PublicacaoViewHolder(@NonNull View itemView) {
             super(itemView);
-            imagem = itemView.findViewById(R.id.imgFoto);
+
+            txtCategoria = itemView.findViewById(R.id.txtCategoriaGrade);
+            txtDescricao = itemView.findViewById(R.id.txtDescricaoGrade);
         }
     }
 }

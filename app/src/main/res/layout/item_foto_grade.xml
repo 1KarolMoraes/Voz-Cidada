@@ -1,9 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.voz_cidada.SquareImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/imgFoto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="1dp"
-    android:background="@color/vc_placeholder"
-    android:contentDescription="@string/perfil_titulo"
-    android:scaleType="centerCrop" />
+    android:layout_height="120dp"
+    android:layout_margin="3dp"
+    android:background="@drawable/bg_card_stats"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/txtCategoriaGrade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/vc_azul"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtDescricaoGrade"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="6dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="4"
+        android:textColor="@color/vc_texto"
+        android:textSize="12sp" />
+
+</LinearLayout>
