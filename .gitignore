@@ -13,3 +13,14 @@
 .externalNativeBuild
 .cxx
 local.properties
+# Dependências do Node.js
+/node_modules/
+
+# Logs do Firebase
+firebase-debug.log
+firestore-debug.log
+firebase-debug.*.log
+firestore-debug.*.log
+
+# Arquivos temporários dos emuladores
+firebase-export/
